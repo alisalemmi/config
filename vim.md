@@ -87,7 +87,36 @@ inoremap <C-Z> <C-O>u
 inoremap <C-Y> <C-O><C-R>
 ```
 </div>
-  
+یا
+<div dir="ltr">
+
+```vim
+source $VIMRUNTIME/mswin.vim
+```
+</div>
+
+- alt j, alt k
+<div dir="ltr">
+
+```vim
+nnoremap <A-u> :m .-2<CR>==
+nnoremap <A-d> :m .+1<CR>==
+inoremap <A-u> <Esc>:m .+1<CR>==gi
+inoremap <A-d> <Esc>:m .-2<CR>==gi
+vnoremap <A-u> :m '>+1<CR>gv=gv
+vnoremap <A-d> :m '<-2<CR>gv=gv
+```
+</div>
+
+- ctrl alt d
+<div dir="ltr">
+
+```vim
+nnoremap <C-A-d> :t. <CR>==
+inoremap <C-A-k> <Esc>:t. <CR>==gi
+vnoremap <C-A-k> :t$ <CR>gv=gv
+```
+</div>
 
 ## تنظیمات کلی
 - شماره خط ها: `set number`
