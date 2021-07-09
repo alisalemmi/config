@@ -76,6 +76,19 @@ let g:airline#extensions#branch#enabled=1
   
 **نکته**: برای بستن هر پنجره از <span dir="ltr">`:bd`</span> استفاده می شود.
 
+## میانبر ها
+- ctrl Z, ctrl Y:
+<div dir="ltr">
+
+```vim
+nnoremap <C-Z> u
+nnoremap <C-Y> <C-R>
+inoremap <C-Z> <C-O>u
+inoremap <C-Y> <C-O><C-R>
+```
+</div>
+  
+
 ## تنظیمات کلی
 - شماره خط ها: `set number`
 - فعال کردن ماوس: `set mouse=a`
@@ -97,7 +110,8 @@ set expandtab
 
 ```vim
 let g:auto_save = 1
-let g:auto_save_events = ["InsertLeave", "TextChangedI", "TextChanged"]
+let g:auto_save_events = ["InsertLeave", "CursorHoldI", "CursorHold"]
+let g:auto_save_updateTime = 500
 ```
 </div>
 </div>
