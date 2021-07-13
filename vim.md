@@ -76,6 +76,55 @@ let g:airline#extensions#branch#enabled=1
   
 **نکته**: برای بستن هر پنجره از <span dir="ltr">`:bd`</span> استفاده می شود.
 
+## ترمینال
+با استفاده از میانبر alt + T ترمینال باز یا بسته می شود.
+
+<div dir="ltr">
+
+```vim
+" toggle terminal
+ let g:term_buf = 0
+ let g:term_win = 0
+
+ function! Term_toggle(height)
+     if win_gotoid(g:term_win)
+         hide
+     else
+         botright new
+         exec "resize " . a:height
+         try
+             exec "buffer " . g:term_buf
+         catch
+             call termopen($SHELL, {"detach": 0})
+             let g:term_buf = bufnr("")
+         endtry
+         startinsert!
+         let g:term_win = win_getid()
+     endif
+ endfunction
+ 
+ nnoremap <silent> <M-t> :call Term_toggle(10)<cr>
+ tnoremap <silent> <M-t> <C-\><C-n>:call Term_toggle(10)<cr>
+ 
+ autocmd TermOpen * setlocal nonumber norelativenumber
+```
+</div>
+
+## auto complete
+1. نصب [coc](https://github.com/neoclide/coc.nvim#quick-start)
+2. استفاده از [تنظیمات پیش فرض](https://github.com/neoclide/coc.nvim#example-vim-configuration)
+
+## lint & format
+<div dir="ltr">
+
+```vim
+ let g:ale_fixers = { 'javascript': ['eslint'] }
+ let g:ale_sign_error = '❌'
+ let g:ale_sign_warning = '⚠️'
+ let g:ale_fix_on_save = 1
+```
+</div>
+
 ## میانبر ها
 - ctrl Z, ctrl Y:
 <div dir="ltr">
