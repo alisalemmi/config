@@ -1,0 +1,46 @@
+#!/bin/python3
+import sys
+import subprocess
+import configparser
+
+def getGitRoot() -> str:
+  res = subprocess.run(['git', 'rev-parse', '--show-toplevel'],
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+  if res.returncode == 0:
+    return res.stdout.decode("utf-8").strip()
+  else:
+    print('fatal: not a git repository')
+    exit(1)
+
+
+if __name__ == "__main__":
+  command = sys.argv[1]
+  config_path = f'{getGitRoot()}/.git/config'
+  config = configparser.ConfigParser()
+  config.read(config_path)
+
+  try:
+    if command == '-h' or command == 'help':
+      help = [['-h', 'help', 'show help'],
+              ['-c', 'current', 'show current flow'],
+              ['-s', 'switch', 'show current flow']]
+
+      for h in help:
+        print(f'{h[1]}\t\t{h[0]}\t-- {h[2]}')
+
+    elif command == '-c' or command == 'current':
+      print(config['gitflow "branch"']['master'])
+
+    elif command == '-s' or command == 'switch':
+      config['gitflow "branch"']['master'] = sys.argv[2]
+      config['gitflow "branch"']['develop'] = f'dev-{sys.argv[2]}'
+
+      with open(config_path, 'w') as config_file:
+        config.write(config_file)
+
+      print(f'switched to {sys.argv[2]} successfully')
+
+  except:
+    print('fatal: not a git flow repository')
+    exit(2)
