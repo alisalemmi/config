@@ -10,8 +10,48 @@ def getGitRoot() -> str:
   if res.returncode == 0:
     return res.stdout.decode("utf-8").strip()
   else:
-    print('fatal: not a git repository')
+    print('fatal: not a git repository', file=sys.stderr)
     exit(1)
+
+
+def get_flow() -> str:
+  return config['gitflow "branch"']['master']
+
+
+def check_branches(new_flow: str) -> None:
+  git_branch = subprocess.run(['git', 'branch'], stdout=subprocess.PIPE)
+  branches = [br.strip() for br in git_branch.stdout.decode(
+      "utf-8").strip().replace('*', '').split('\n')]
+
+  if new_flow not in branches:
+    raise Exception(f'invalid flow\nthere is not branch {new_flow}')
+
+  elif f'dev-{new_flow}' not in branches:
+    raise Exception(f'invalid flow\nthere is not branch dev-{new_flow}')
+
+
+def switch(new_flow: str) -> None:
+  try:
+    check_branches(new_flow)
+
+  except Exception as err:
+    print(err.args[0], file=sys.stderr)
+
+  else:
+    config['gitflow "branch"']['master'] = new_flow
+    config['gitflow "branch"']['develop'] = f'dev-{new_flow}'
+
+    config['gitflow "prefix"']['feature'] = f'feature/{new_flow}/'
+    config['gitflow "prefix"']['bugfix'] = f'bugfix/{new_flow}/'
+    config['gitflow "prefix"']['release'] = f'release/{new_flow}/'
+    config['gitflow "prefix"']['hotfix'] = f'hotfix/{new_flow}/'
+    config['gitflow "prefix"']['support'] = f'support/{new_flow}/'
+    config['gitflow "prefix"']['versiontag'] = f'{new_flow}-v'
+
+    with open(config_path, 'w') as config_file:
+      config.write(config_file)
+
+    print(f'switched to {sys.argv[2]} successfully')
 
 
 if __name__ == "__main__":
@@ -30,17 +70,11 @@ if __name__ == "__main__":
         print(f'{h[1]}\t\t{h[0]}\t-- {h[2]}')
 
     elif command == '-c' or command == 'current':
-      print(config['gitflow "branch"']['master'])
+      print(f'current flow: {get_flow()}')
 
     elif command == '-s' or command == 'switch':
-      config['gitflow "branch"']['master'] = sys.argv[2]
-      config['gitflow "branch"']['develop'] = f'dev-{sys.argv[2]}'
-
-      with open(config_path, 'w') as config_file:
-        config.write(config_file)
-
-      print(f'switched to {sys.argv[2]} successfully')
+      switch(sys.argv[2])
 
   except:
-    print('fatal: not a git flow repository')
+    print('fatal: not a git flow repository', file=sys.stderr)
     exit(2)
