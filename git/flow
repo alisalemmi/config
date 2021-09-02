@@ -3,6 +3,33 @@ import sys
 import subprocess
 import configparser
 
+def show_help():
+  print('''change git flow main and dev branch and branch prefixes.
+
+  branches:
+    main: <flow>
+    dev: dev-<flow>
+
+  prefixes:
+    feature/<flow>/   or   <prefix>/feature/
+    bugfix/<flow>/    or   <prefix>/bugfix/
+    release/<flow>/   or   <prefix>/release/
+    hotfix/<flow>/    or   <prefix>/hotfix/
+    support/<flow>/   or   <prefix>/support/
+
+  versioning:
+    <flow>-v          or   <prefix>-v
+
+  usage:''')
+
+  help = [['-h', 'help', [], 'show help'],
+          ['-c', 'current', [], 'show current flow'],
+          ['-s', 'switch', ['<flow>', '[prefix]'], 'show current flow']]
+
+  for h in help:
+    print(f'    {h[0]}, {h[1]} {" ".join(h[2])}'.ljust(30), f'-- {h[3]}')
+
+
 def getGitRoot() -> str:
   res = subprocess.run(['git', 'rev-parse', '--show-toplevel'],
                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -21,7 +48,7 @@ def get_flow() -> str:
 def check_branches(new_flow: str) -> None:
   git_branch = subprocess.run(['git', 'branch'], stdout=subprocess.PIPE)
   branches = [br.strip() for br in git_branch.stdout.decode(
-      "utf-8").strip().replace('*', '').split('\n')]
+      "utf-8").strip().replace('*', '').replace('+', '').split('\n')]
 
   if new_flow not in branches:
     raise Exception(f'invalid flow\nthere is not branch {new_flow}')
@@ -30,7 +57,7 @@ def check_branches(new_flow: str) -> None:
     raise Exception(f'invalid flow\nthere is not branch dev-{new_flow}')
 
 
-def switch(new_flow: str) -> None:
+def switch(new_flow: str, prefix: str = None) -> None:
   try:
     check_branches(new_flow)
 
@@ -41,12 +68,13 @@ def switch(new_flow: str) -> None:
     config['gitflow "branch"']['master'] = new_flow
     config['gitflow "branch"']['develop'] = f'dev-{new_flow}'
 
-    config['gitflow "prefix"']['feature'] = f'feature/{new_flow}/'
-    config['gitflow "prefix"']['bugfix'] = f'bugfix/{new_flow}/'
-    config['gitflow "prefix"']['release'] = f'release/{new_flow}/'
-    config['gitflow "prefix"']['hotfix'] = f'hotfix/{new_flow}/'
-    config['gitflow "prefix"']['support'] = f'support/{new_flow}/'
-    config['gitflow "prefix"']['versiontag'] = f'{new_flow}-v'
+    config['gitflow "prefix"']['feature'] = f'{prefix}/feature/' if prefix else f'feature/{new_flow}/'
+    config['gitflow "prefix"']['bugfix'] = f'{prefix}/bugfix/' if prefix else f'bugfix/{new_flow}/'
+    config['gitflow "prefix"']['release'] = f'{prefix}/release/' if prefix else f'release/{new_flow}/'
+    config['gitflow "prefix"']['hotfix'] = f'{prefix}/hotfix/' if prefix else f'hotfix/{new_flow}/'
+    config['gitflow "prefix"']['support'] = f'{prefix}/support/' if prefix else f'support/{new_flow}/'
+
+    config['gitflow "prefix"']['versiontag'] = f'{prefix}-v' if prefix else f'{new_flow}-v'
 
     with open(config_path, 'w') as config_file:
       config.write(config_file)
@@ -62,18 +90,13 @@ if __name__ == "__main__":
 
   try:
     if command == '-h' or command == 'help':
-      help = [['-h', 'help', 'show help'],
-              ['-c', 'current', 'show current flow'],
-              ['-s', 'switch', 'show current flow']]
-
-      for h in help:
-        print(f'{h[1]}\t\t{h[0]}\t-- {h[2]}')
+      show_help()
 
     elif command == '-c' or command == 'current':
       print(f'current flow: {get_flow()}')
 
     elif command == '-s' or command == 'switch':
-      switch(sys.argv[2])
+      switch(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
 
   except:
     print('fatal: not a git flow repository', file=sys.stderr)
