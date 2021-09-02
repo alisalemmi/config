@@ -206,7 +206,7 @@ function prompt_battery() {
 
   [[ $wsl -eq 0 ]] && battery_dir=/sys/class/power_supply/battery || battery_dir=/sys/class/power_supply/BAT0
 
-  [[ `cat $battery_dir/present` -ne 1 ]] && return
+  [[ ! -d $battery_dir || `cat $battery_dir/present` -ne 1 ]] && return
 
   percent=`cat $battery_dir/capacity`
   stat=`cat $battery_dir/status`
