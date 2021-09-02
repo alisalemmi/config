@@ -101,15 +101,34 @@ function prompt_status() {
 
 # Dir: current working directory
 function prompt_dir() {
-  dir=`pwd | sed 's/^\/mnt\///'`
-
-  if [[ $dir == '/'* ]];
+  dir=`pwd`
+  
+  # home
+  if [[ $dir == "/home/$USER"* ]];
   then
     dir=`echo $dir | sed "s/^\/home\/$USER//"`
-  else
-    dir=`echo $dir | sed 's/\//:\//'`
+
+  # wsl drive
+  elif [[ $dir == '/mnt/'* ]];
+  then
+    dir=`echo $dir | sed 's/^\/mnt\///' | sed 's/\//:\//'`
     dir="$(tr '[:lower:]' '[:upper:]' <<< ${dir:0:1})${dir:1}"
-    dir=`echo $dir | sed 's/:\/Users\/[a-zA-z]*/:\//'`
+    [[ -z ${dir:1} ]] && dir+=':'
+
+  # linux drive
+  elif [[ $dir == "/media/$USER"* ]];
+  then
+    dir=`echo $dir | sed "s/^\/media\/$USER\///" | sed 's/\//:\//'`
+    [[ `grep ':' -iq <<< $dir; echo $?` -ne 0 ]] && dir+=':'
+
+  # root
+  elif [[ $dir == '/' ]];
+  then
+    dir=''
+
+  # root subdir
+  else
+    dir=`echo $dir | sed 's/^\//\//'`
   fi
 
   dir=`echo $dir | sed 's/\//  /g'`
