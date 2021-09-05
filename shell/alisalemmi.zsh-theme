@@ -279,7 +279,7 @@ function build_top_right() {
 }
 
 function build_bottom_left() {
-  echo -n '%{%F{#9B6BDF}%}❯ '
+  echo -n '%{%F{#9B6BDF}%}❯%{%F{reset}%} '
 }
 
 function build() {
