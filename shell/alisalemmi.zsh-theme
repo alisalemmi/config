@@ -92,7 +92,7 @@ function fill-line() {
 function prompt_status() {
   local -a symbols
 
-  [[ -n $SSH_CONNECTION ]] && symbols+="%{%F{yellow}%}力
+  [[ -n $SSH_CONNECTION ]] && symbols+="%{%F{yellow}%}力"
   [[ $RETVAL -ne 0 ]] && symbols+="%{%F{red}%}✘"
   [[ $UID -eq 0 ]] && symbols+="%{%F{yellow}%}⚡"
   [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}⚙"
