@@ -1,31 +1,25 @@
-### Segment drawing
-# A few utility functions to make it easy and re-usable to draw segmented prompts
-
 CURRENT_BG='NONE'
 CURRENT_FG='white'
 
 () {
   local LC_ALL="" LC_CTYPE="en_US.UTF-8"
-  # NOTE: This segment separator character is correct.  In 2012, Powerline changed
-  # the code points they use for their special characters. This is the new code point.
-  # If this is not working for you, you probably have an old version of the
-  # Powerline-patched fonts installed. Download and install the new version.
-  # Do not submit PRs to change this unless you have reviewed the Powerline code point
-  # history and have new information.
-  # This is defined using a Unicode escape sequence so it is unambiguously readable, regardless of
-  # what font the user is viewing this source code in. Do not replace the
-  # escape sequence with a single literal character.
-  # Do not change this! Do not make it '\u2b80'; that is the old, wrong code point.
+
   SEGMENT_SEPARATOR=$'\ue0b0'
-  CHIP_LEFT=''
-  CHIP_RIGHT=''
+  SEPARATOR=$'\ue0b1'
+  CHIP_LEFT=$'\ue0b6'
+  CHIP_RIGHT=$'\ue0b4'
+
+  ICON_PROMPT=$'\u276f'
+  ICON_HOME=$'\uf7db'
+  ICON_PC=$'\uf108 '
+  ICON_BRANCH=$'\ue0a0'
+  ICON_CLOCK=$'\uf64f'
+  ICON_TIMER=$'\uf608'
 }
 
-# Begin a segment
 # Takes two arguments, background and foreground. Both can be omitted,
 # rendering default background/foreground.
 function prompt_segment() {
-  # echo $CURRENT_BG
   local bg fg
   [[ -n $1 ]] && bg="%K{$1}" || bg="%k"
   [[ -n $2 ]] && fg="%F{$2}" || fg="%f"
@@ -41,7 +35,6 @@ function prompt_segment() {
   [[ -n $3 ]] && echo -n $3
 }
 
-# End the prompt, closing any open segments
 function prompt_end() {
   if [[ -n $CURRENT_BG ]]; then
     echo -n " %{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR"
@@ -52,7 +45,6 @@ function prompt_end() {
   CURRENT_BG=''
 }
 
-# prompt Chip
 function prompt_chip() {
   echo -n " %{%F{$1}%k%}$CHIP_LEFT%{%F{$2}%K{$1}%}$3%{%F{$1}%k%}$CHIP_RIGHT%{%k%f%}"
 }
@@ -83,12 +75,6 @@ function fill-line() {
 }
 
 ### Prompt components
-# Each component will draw itself, and hide itself if no information needs to be shown
-
-# Status:
-# - was there an error
-# - am I root
-# - are there background jobs?
 function prompt_status() {
   local -a symbols
 
@@ -100,14 +86,17 @@ function prompt_status() {
   [[ -n "$symbols" ]] && prompt_segment black default "$symbols"
 }
 
-# Dir: current working directory
+function prompt_user() {
+  prompt_segment 'yellow' 'black' "$USER $SEPARATOR $HOST"
+}
+
 function prompt_dir() {
   dir=`pwd`
   
   # home
   if [[ $dir == "/home/$USER"* ]];
   then
-    dir=`echo $dir | sed "s/^\/home\/$USER//"`
+    dir=`echo $dir | sed "s/^\/home\/$USER/$ICON_HOME/"`
 
   # wsl drive
   elif [[ $dir == '/mnt/'* ]];
@@ -125,16 +114,16 @@ function prompt_dir() {
   # root
   elif [[ $dir == '/' ]];
   then
-    dir=''
+    dir="$ICON_PC"
 
   # root subdir
   else
-    dir=`echo $dir | sed 's/^\//\//'`
+    dir=`echo $dir | sed 's/^\//$ICON_PC\//'`
   fi
 
-  dir=`echo $dir | sed 's/\//  /g'`
+  dir=`echo $dir | sed "s/\// $SEPARATOR /g"`
 
-  prompt_segment '#0087D8' '#ddd' " %{%F{#003544}%}$dir"
+  prompt_segment 'blue' 'black' "$dir"
 }
 
 function prompt_git() {
@@ -142,11 +131,7 @@ function prompt_git() {
   if [[ "$(git config --get oh-my-zsh.hide-status 2>/dev/null)" = 1 ]]; then
     return
   fi
-  local PL_BRANCH_CHAR
-  () {
-    local LC_ALL="" LC_CTYPE="en_US.UTF-8"
-    PL_BRANCH_CHAR=$'\ue0a0'         # 
-  }
+
   local ref dirty mode repo_path
 
    if [[ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]]; then
@@ -178,16 +163,14 @@ function prompt_git() {
     zstyle ':vcs_info:*' formats ' %u%c'
     zstyle ':vcs_info:*' actionformats ' %u%c'
     vcs_info
-    echo -n "${ref/refs\/heads\//$PL_BRANCH_CHAR }${vcs_info_msg_0_%% }${mode}"
+    echo -n "${ref/refs\/heads\//$ICON_BRANCH }${vcs_info_msg_0_%% }${mode}"
   fi
 }
 
-# Current Time
 function prompt_time() {
-  prompt_chip '#424242' '#9B6BDF' " `date +'%H:%M:%S'` "
+  prompt_chip '#424242' 'magenta' "$ICON_CLOCK `date +'%H:%M:%S'` "
 }
 
-# Executation Time
 function prompt_execution_time() {
   if [[ -z $elapsed ]];
   then
@@ -217,10 +200,9 @@ function prompt_execution_time() {
     elapsed+="${s}.${fms}s"
   fi
 
-  prompt_chip '#424242' '#76ff03' " ${elapsed} "
+  prompt_chip '#424242' '#76ff03' "$ICON_TIMER ${elapsed} "
 }
 
-# Battery
 function prompt_battery() {
   wsl=`cat /proc/version | grep 'microsoft' -iq; echo $?`
 
@@ -263,9 +245,8 @@ function prompt_battery() {
   prompt_chip '#424242' $color "$icon $percent"
 }
 
-## Main prompt
 function build_top_left() {
-  RETVAL=$?
+  prompt_user
   prompt_status
   prompt_dir
   prompt_git
@@ -279,7 +260,7 @@ function build_top_right() {
 }
 
 function build_bottom_left() {
-  echo -n '%{%F{#9B6BDF}%}❯%{%F{reset}%} '
+  echo -n '%{%F{magenta}%}$ICON_PROMPT%{%F{reset}%} '
 }
 
 function build() {
