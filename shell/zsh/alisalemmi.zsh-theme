@@ -10,11 +10,15 @@ CURRENT_FG='white'
   CHIP_RIGHT=$'\ue0b4'
 
   ICON_PROMPT=$'\u276f'
-  ICON_HOME=$'\uf7db'
-  ICON_PC=$'\uf108 '
+  ICON_HOME=$'\uf015 '
+  ICON_PC=$'\uf26c '
   ICON_BRANCH=$'\ue0a0'
-  ICON_CLOCK=$'\uf64f'
+  ICON_ROOT=$'\uf0e7'
+  ICON_CLOUD=$'\uf0c2 '
+  ICON_FAIL=$'\uf00d'
+  ICON_SETTING=$'\uf013 '
   ICON_TIMER=$'\uf608'
+  ICON_CLOCK=$'\uf017'
 }
 
 # Takes two arguments, background and foreground. Both can be omitted,
@@ -78,10 +82,10 @@ function fill-line() {
 function prompt_status() {
   local -a symbols
 
-  [[ -n $SSH_CONNECTION ]] && symbols+="%{%F{yellow}%}力"
-  [[ $RETVAL -ne 0 ]] && symbols+="%{%F{red}%}✘"
-  [[ $UID -eq 0 ]] && symbols+="%{%F{yellow}%}⚡"
-  [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}⚙"
+  [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{white}%}$ICON_SETTING"
+  [[ $RETVAL -ne 0 ]] && symbols+="%{%F{red}%}$ICON_FAIL"
+  [[ -n $SSH_CONNECTION ]] && symbols+="%{%F{cyan}%}$ICON_CLOUD"
+  [[ $UID -eq 0 ]] && symbols+="%{%F{yellow}%}$ICON_ROOT"
 
   [[ -n "$symbols" ]] && prompt_segment black default "$symbols"
 }
@@ -247,13 +251,13 @@ function prompt_battery() {
 
 function build_top_left() {
   prompt_user
-  prompt_status
   prompt_dir
   prompt_git
   prompt_end
 }
 
 function build_top_right() {
+  prompt_status
   prompt_execution_time
   prompt_time
   prompt_battery
