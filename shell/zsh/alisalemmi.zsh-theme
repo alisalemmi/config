@@ -122,7 +122,7 @@ function prompt_dir() {
 
   # root subdir
   else
-    dir=`echo $dir | sed 's/^\//$ICON_PC\//'`
+    dir=`echo $dir | sed "s/^\//$ICON_PC\//"`
   fi
 
   dir=`echo $dir | sed "s/\// $SEPARATOR /g"`
