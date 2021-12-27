@@ -87,7 +87,7 @@ function prompt_status() {
 }
 
 function prompt_user() {
-  prompt_segment 'yellow' 'black' "$USER $SEPARATOR $HOST"
+  prompt_segment 'white' 'black' "$USER $SEPARATOR $HOST"
 }
 
 function prompt_dir() {
