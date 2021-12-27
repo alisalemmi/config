@@ -1,4 +1,4 @@
-# /zsh
+# shell
 
 ## zsh
 
@@ -15,7 +15,7 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 ## template
 
 To have some greet plugins and beautiful theme use
-[.zshrc](//zsh/zsh/.zshrc)
+[.zshrc](/shell/zsh/.zshrc)
 config file and run bellow commands for installing them.
 
 ### plugins
@@ -44,5 +44,5 @@ curl https://raw.githubusercontent.com/alisalemmi/config/master/shell/zsh/alisal
 
 1. do above steps as `root`
 2. copy `.oh-my-zsh` and `.zshrc` to `/etc/skel`
-3. set `/zsh=zsh` in `/etc/default/useradd`
-4. set `D/zsh=zsh` in `/etc/adduser.conf`
+3. set `SHELL=/bin/zsh` in `/etc/default/useradd`
+4. set `DSHELL=/bin/zsh` in `/etc/adduser.conf`
