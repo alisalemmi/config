@@ -84,8 +84,8 @@ function prompt_status() {
 
   [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{white}%}$ICON_SETTING"
   [[ $RETVAL -ne 0 ]] && symbols+="%{%F{red}%}$ICON_FAIL"
-  [[ -n $SSH_CONNECTION ]] && symbols+="%{%F{cyan}%}$ICON_CLOUD"
   [[ $UID -eq 0 ]] && symbols+="%{%F{yellow}%}$ICON_ROOT"
+  [[ `pstree -p | grep -e "sshd.*$PPID"` ]] && symbols+="%{%F{cyan}%}$ICON_CLOUD"
 
   [[ -n "$symbols" ]] && prompt_segment black default "$symbols"
 }
@@ -286,6 +286,8 @@ function preexec() {
 }
 
 function precmd() {
+  RETVAL=$?
+
   if [ $timer ]; then
     now=$(($(date +%s%0N)/1000000))
     elapsed=$(($now-$timer))
