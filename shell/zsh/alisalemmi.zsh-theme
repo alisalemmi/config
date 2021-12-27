@@ -260,7 +260,7 @@ function build_top_right() {
 }
 
 function build_bottom_left() {
-  echo -n '%{%F{magenta}%}$ICON_PROMPT%{%F{reset}%} '
+  echo -n "%{%F{magenta}%}$ICON_PROMPT%{%F{reset}%} "
 }
 
 function build() {
