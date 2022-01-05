@@ -78,7 +78,7 @@ function fill-line() {
 # get components
 # top left
 function prompt_user() {
-  prompt_segment 'NONE' 'white' 'black' "`whoami` $SEPARATOR `hostname`"
+  prompt_segment 'NONE' 'white' 'black' "`whoami`@`hostname`"
 }
 
 function prompt_dir() {
