@@ -41,13 +41,18 @@ sudo timedatectl set-timezone Asia/Tehran
 <span dir='ltr'>`~/.ssh/authorized_keys`</span>
 در سمت سرور.
 
-## تغییر port
+## تنظیمات
 
+ویرایش فایل
+<span dir='ltr'>`/etc/ssh/sshd_config`</span>
+برای تغییر port، محدود کردن ورود root و جلوگیری از ورود با رمز عبور.
 </div>
 
-```sh
-sudo vim /etc/ssh/sshd_config
-sudo systemctl restart ssh.service
+```
+Port 1234
+PermitRootLogin no
+PubkeyAuthentication yes
+PasswordAuthentication no
 ```
 
 <div dir='rtl'>
