@@ -127,6 +127,10 @@ source $ZSH/oh-my-zsh.sh
 # alias i:=/mnt/i
 # alias Desktop=/mnt/c/Users/<user_name>/Desktop
 
+# access windows home dir
+# Ex. cd ~win/Downloads
+# hash -d win=/mnt/c/Users/<user_name>/
+
 # alias nt="cmd.exe /c 'wt.exe' -w 0 nt"
 
 # node ssl problem
