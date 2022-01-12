@@ -46,6 +46,7 @@ sudo timedatectl set-timezone Asia/Tehran
 ویرایش فایل
 <span dir='ltr'>`/etc/ssh/sshd_config`</span>
 برای تغییر port، محدود کردن ورود root و جلوگیری از ورود با رمز عبور.
+
 </div>
 
 ```
@@ -56,4 +57,36 @@ PasswordAuthentication no
 ```
 
 <div dir='rtl'>
+
+# ویرایشگر متن
+
+ویرایش فایل ها با استفاده از
+[vim](/vim)
+که مانند یک ویرایشگر حرفه ای تنظیم شده است.
+
+# &rlm;node js
+
+</div>
+
+```sh
+curl -fsSL https://deb.nodesource.com/setup_<version>.x | sudo -E bash -
+sudo apt install nodejs
+```
+
+<div dir='rtl'>
+
+# &rlm;nginx
+
+</div>
+
+```sh
+sudo apt install nginx
+sudo systemctl enable nginx
+sudo systemctl start nginx
+```
+
+<div dir='rtl'>
+
+قبل از استفاده مطمئن شوید که فایروال به درستی تنظیم شده است.
+
 </div>
