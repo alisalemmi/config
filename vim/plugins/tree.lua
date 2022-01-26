@@ -10,7 +10,7 @@ vim.g.nvim_tree_show_icons = {
 }
 
 vim.g.nvim_tree_icons = { 
-  default = '',
+  default = '',
   git     = {
     unstaged = '',
     staged = '',
@@ -49,8 +49,8 @@ require('nvim-tree').setup {
   diagnostics = {
     enable = true,
     icons  = {
-      hint    = "",
-      info    = "כֿ",
+      hint    = "",
+      info    = "",
       warning = "",
       error   = "✗",
     }
