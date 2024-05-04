@@ -9,7 +9,7 @@ ICON_PROMPT=$'\u276f'
 
 ICON_HOME=$'\uf015 '
 ICON_PC=$'\uf26c '
-ICON_DOTS=$'\uf6d7'
+ICON_DOTS=$'\U000f01d8'
 
 ICON_BRANCH=$'\ue0a0'
 
@@ -18,7 +18,7 @@ ICON_FAIL=$'\uf00d'
 ICON_ROOT=$'\uf0e7'
 ICON_CLOUD=$'\uf0c2 '
 
-ICON_TIMER=$'\uf608'
+ICON_TIMER=$'\U000f051b'
 ICON_CLOCK=$'\uf017'
 
 # rendering functions
@@ -226,7 +226,7 @@ function prompt_battery() {
 
   percent=`cat $battery_dir/capacity`
   stat=`cat $battery_dir/status`
-  icons=('\uf58d' '\uf579' '\uf57a' '\uf57b' '\uf57c' '\uf57d' '\uf57e' '\uf57f' '\uf580' '\uf581' '\uf578')
+  icons=($'\U000f008e' $'\U000f007a' $'\\U000f007b' $'\U000f007c' $'\U000f007d' $'\U000f007e' $'\U000f007f' $'\U000f0080' $'\U000f0081' $'\U000f0082' $'\U000f79')
 
   case $stat in
     Full)
@@ -235,12 +235,12 @@ function prompt_battery() {
       ;;
 
     'Not charging')
-      icon='\uf58e'
+      icon=$'\U000f008f'
       color='green'
       ;;
 
     Charging)
-      icon='\uf583'
+      icon=$'\U000f0084'
       color='cyan'
       ;;
 
@@ -250,7 +250,7 @@ function prompt_battery() {
       ;;
 
     *)
-      icon='\uf590'
+      icon=$'\U000f0083'
       color='yellow'
       ;;
 
